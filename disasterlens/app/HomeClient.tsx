@@ -66,9 +66,7 @@ export default function HomeClient() {
   const [estimatedCost, setEstimatedCost] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [showIntro, setShowIntro] = useState(true);
-  const [currentView, setCurrentView] = useState
-    "report" | "dashboard" | "volunteers" | "routes"
-  >("dashboard");
+  const [currentView, setCurrentView] = useState<"report" | "dashboard" | "volunteers" | "routes">("dashboard");
   const [verificationInfo, setVerificationInfo] = useState<{
     verified: boolean;
     reportCount: number;
