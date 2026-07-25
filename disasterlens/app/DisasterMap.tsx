@@ -186,25 +186,36 @@ export function checkRouteForBlockedRoads(
   };
 }
 
-// Colors for each hazard type
-function getColorIcon(type: string) {
-  const colors: Record<string, string> = {
-    flood: "blue",
-    fire: "red",
-    downed_tree: "green",
-    damaged_building: "orange",
-    blocked_road: "yellow",
-    none: "grey",
-  };
-  const color = colors[type] || "grey";
+// ---- Marker styling: matches the semantic palette used across the app ----
 
-  return new L.Icon({
-    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
+const MARKER_COLORS: Record<string, string> = {
+  flood: "#7C93FF",
+  fire: "#F0555A",
+  downed_tree: "#34D399",
+  damaged_building: "#F0A63A",
+  blocked_road: "#E8B93F",
+  none: "#5B6675",
+  shelter: "#8B5CF6",
+  volunteer: "#5EEAD4",
+};
+
+function pinDivIcon(color: string) {
+  const html = `<svg width="26" height="34" viewBox="0 0 26 34" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13 0C5.8 0 0 5.8 0 13c0 9.5 13 21 13 21s13-11.5 13-21C26 5.8 20.2 0 13 0z" fill="${color}" stroke="#0A0E14" stroke-width="1"/>
+    <circle cx="13" cy="13" r="5" fill="#0A0E14" fill-opacity="0.18"/>
+  </svg>`;
+
+  return L.divIcon({
+    className: "", // prevents Leaflet's default white square background
+    html,
+    iconSize: [26, 34],
+    iconAnchor: [13, 34],
+    popupAnchor: [0, -30],
   });
+}
+
+function getColorIcon(type: string) {
+  return pinDivIcon(MARKER_COLORS[type] || MARKER_COLORS.none);
 }
 
 export default function DisasterMap({
@@ -218,114 +229,101 @@ export default function DisasterMap({
 }) {
   const center: [number, number] = [27.9506, -82.4572];
 
-  const shelterIcon = new L.Icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-  });
-
-  const volunteerIcon = new L.Icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-  });
+  const shelterIcon = pinDivIcon(MARKER_COLORS.shelter);
+  const volunteerIcon = pinDivIcon(MARKER_COLORS.volunteer);
 
   return (
-    <MapContainer
-      center={center}
-      zoom={11}
-      style={{ height: "500px", width: "100%", borderRadius: "12px" }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; OpenStreetMap contributors'
-      />
-
-      {/* Hazard pins */}
-      {hazards.map((hazard) => (
-        <Marker
-          key={hazard.id}
-          position={[hazard.lat, hazard.lng]}
-          icon={getColorIcon(hazard.type)}
-        >
-          <Popup>
-            <strong>{hazard.type.replace("_", " ").toUpperCase()}</strong>
-            <br />
-            Severity: {hazard.severity}
-            <br />
-            {hazard.description}
-            <br />
-            <br />
-            {hazard.verified ? (
-              <span style={{ color: "green", fontWeight: "bold" }}>
-                ✅ Verified ({hazard.reportCount} reports)
-              </span>
-            ) : (
-              <span style={{ color: "orange", fontWeight: "bold" }}>
-                ⚠️ Unverified (1 report)
-              </span>
-            )}
-          </Popup>
-        </Marker>
-      ))}
-
-      {/* Shelter pins */}
-      {SHELTERS.map((shelter) => (
-        <Marker
-          key={`shelter-${shelter.id}`}
-          position={[shelter.lat, shelter.lng]}
-          icon={shelterIcon}
-        >
-          <Popup>
-            <strong>{shelter.name}</strong>
-            <br />
-            Occupancy: {shelter.currentOccupancy}/{shelter.capacity}
-            <br />
-            {shelter.hasFood ? "✅ Food" : "❌ No food"}
-            <br />
-            {shelter.hasMedical ? "✅ Medical staff" : "❌ No medical staff"}
-            <br />
-            {shelter.petFriendly ? "✅ Pet-friendly" : "❌ Not pet-friendly"}
-          </Popup>
-        </Marker>
-      ))}
-
-      {/* Route line */}
-      {route && (
-        <Polyline
-          positions={[route.start, route.end]}
-          pathOptions={{
-            color: route.blocked ? "red" : "lime",
-            weight: 4,
-            dashArray: route.blocked ? "10, 10" : undefined,
-          }}
+    <div className="p-[10px] bg-[var(--bg-elevated)]">
+      <MapContainer
+        center={center}
+        zoom={11}
+        style={{ height: "440px", width: "100%", borderRadius: "8px" }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; OpenStreetMap contributors'
         />
-      )}
 
-      {/* Volunteer pins */}
-      {volunteers.map((volunteer) => (
-        <Marker
-          key={`volunteer-${volunteer.id}`}
-          position={[volunteer.lat, volunteer.lng]}
-          icon={volunteerIcon}
-        >
-          <Popup>
-            <strong>{volunteer.name}</strong>
-            <br />
-            Skill: {volunteer.skill.replace("_", " ")}
-            <br />
-            Neighborhood: {volunteer.neighborhood}
-            <br />
-            Contact: {volunteer.contact}
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        {/* Hazard pins */}
+        {hazards.map((hazard) => (
+          <Marker
+            key={hazard.id}
+            position={[hazard.lat, hazard.lng]}
+            icon={getColorIcon(hazard.type)}
+          >
+            <Popup>
+              <strong>{hazard.type.replace("_", " ").toUpperCase()}</strong>
+              <br />
+              Severity: {hazard.severity}
+              <br />
+              {hazard.description}
+              <br />
+              <br />
+              {hazard.verified ? (
+                <span style={{ color: "#6EE7B7", fontWeight: "bold" }}>
+                  ✅ Verified ({hazard.reportCount} reports)
+                </span>
+              ) : (
+                <span style={{ color: "#F3BE72", fontWeight: "bold" }}>
+                  ⚠️ Unverified (1 report)
+                </span>
+              )}
+            </Popup>
+          </Marker>
+        ))}
+
+        {/* Shelter pins */}
+        {SHELTERS.map((shelter) => (
+          <Marker
+            key={`shelter-${shelter.id}`}
+            position={[shelter.lat, shelter.lng]}
+            icon={shelterIcon}
+          >
+            <Popup>
+              <strong>{shelter.name}</strong>
+              <br />
+              Occupancy: {shelter.currentOccupancy}/{shelter.capacity}
+              <br />
+              {shelter.hasFood ? "✅ Food" : "❌ No food"}
+              <br />
+              {shelter.hasMedical ? "✅ Medical staff" : "❌ No medical staff"}
+              <br />
+              {shelter.petFriendly ? "✅ Pet-friendly" : "❌ Not pet-friendly"}
+            </Popup>
+          </Marker>
+        ))}
+
+        {/* Route line */}
+        {route && (
+          <Polyline
+            positions={[route.start, route.end]}
+            pathOptions={{
+              color: route.blocked ? "#F0555A" : "#5EEAD4",
+              weight: 4,
+              dashArray: "8, 6",
+            }}
+          />
+        )}
+
+        {/* Volunteer pins */}
+        {volunteers.map((volunteer) => (
+          <Marker
+            key={`volunteer-${volunteer.id}`}
+            position={[volunteer.lat, volunteer.lng]}
+            icon={volunteerIcon}
+          >
+            <Popup>
+              <strong>{volunteer.name}</strong>
+              <br />
+              Skill: {volunteer.skill.replace("_", " ")}
+              <br />
+              Neighborhood: {volunteer.neighborhood}
+              <br />
+              Contact: {volunteer.contact}
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 }

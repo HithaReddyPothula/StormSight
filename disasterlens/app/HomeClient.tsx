@@ -40,13 +40,15 @@ const SKILL_OPTIONS = [
 
 const NEIGHBORHOOD_OPTIONS = Object.keys(TAMPA_NEIGHBORHOODS);
 
+// Semantic hazard colors — used ONLY to encode meaning (dots, chart, table),
+// never as decoration elsewhere in the UI.
 const HAZARD_COLORS: Record<string, string> = {
-  flood: "#3388ff",
-  fire: "#ff3333",
-  downed_tree: "#33cc33",
-  damaged_building: "#ff9900",
-  blocked_road: "#ffcc00",
-  none: "#888888",
+  flood: "#7C93FF",
+  fire: "#F0555A",
+  downed_tree: "#34D399",
+  damaged_building: "#F0A63A",
+  blocked_road: "#E8B93F",
+  none: "#5B6675",
 };
 
 type RouteResult = {
@@ -264,80 +266,111 @@ export default function HomeClient() {
     setLoading(false);
   }
 
+  // ---------------- LANDING ----------------
   if (showIntro) {
     return (
-      <main className="min-h-screen bg-slate-950 text-white flex flex-col relative overflow-hidden">
-        {/* Background glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-900/20 via-slate-950 to-blue-900/20"></div>
-        <div className="absolute top-1/3 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+      <main className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)] flex flex-col relative overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(45,212,191,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.035) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(1000px 500px at 78% 10%, black, transparent 70%)",
+          }}
+        />
 
         {/* Top nav */}
         <nav className="relative z-10 flex items-center justify-between px-8 py-5">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🛰️</span>
-            <span className="font-bold text-lg">DisasterLens</span>
-            <span className="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full ml-1">
+          <div className="flex items-center gap-2.5">
+            <BrandMark />
+            <span className="font-display font-semibold text-lg">DisasterLens</span>
+            <span className="font-mono text-[10px] text-[var(--text-muted)] bg-[var(--surface)] border border-[var(--border)] px-2 py-0.5 rounded-full ml-1">
               v1.0
             </span>
           </div>
           <button
             onClick={() => setShowIntro(false)}
-            className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2 rounded-lg text-sm transition"
+            className="font-display font-medium bg-[var(--surface)] border border-[var(--border-strong)] text-[var(--text-primary)] px-5 py-2 rounded-lg text-sm transition-all duration-200 hover:bg-[var(--surface-hover)] hover:border-[var(--accent)] hover:text-[var(--accent-text)] hover:-translate-y-0.5"
           >
             Dashboard →
           </button>
         </nav>
 
         {/* Hero content */}
-        <div className="relative z-10 flex-1 flex flex-col justify-center px-8 max-w-3xl">
-          <div className="inline-block mb-4">
-            <span className="text-xs font-medium bg-orange-500/10 text-orange-300 border border-orange-500/30 px-3 py-1 rounded-full">
-              ● AI DISASTER INTELLIGENCE · TAMPA BAY
+        <div className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-center px-8 max-w-6xl mx-auto w-full">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent-text)] bg-[var(--accent-dim)] border border-[#1E4A45] pl-2.5 pr-3 py-1.5 rounded-full w-fit">
+            <span className="relative w-1.5 h-1.5 rounded-full bg-[var(--accent)]">
+              <span className="absolute inset-[-4px] rounded-full border border-[var(--accent)] dl-ring-pulse" />
             </span>
+            AI disaster intelligence · Tampa Bay
           </div>
 
-          <h1 className="text-6xl font-bold mb-6 leading-tight">
+          <h1 className="font-display font-bold text-6xl mb-6 leading-tight tracking-tight">
             Disaster
-            <span className="text-orange-400">Lens</span>
+            <span className="text-[var(--accent-text)]">Lens</span>
           </h1>
 
-          <p className="text-slate-300 text-lg mb-2 max-w-xl">
+          <p className="text-[var(--text-primary)] text-lg mb-2 max-w-xl font-medium">
             When disaster strikes, every second matters.
           </p>
-          <p className="text-slate-400 mb-10 max-w-xl">
+          <p className="text-[var(--text-secondary)] mb-10 max-w-xl leading-relaxed">
             DisasterLens turns community-submitted photos and voice reports
-            into real-time emergency intelligence — helping responders
-            identify hazards, locate shelters, and save lives{" "}
-            <strong className="text-white">faster.</strong>
+            into <strong className="text-[var(--text-primary)] font-medium">real-time emergency intelligence </strong>
+            — helping responders
+            identify hazards, locate shelters, and save lives faster.{" "}
+            
           </p>
 
           <div className="flex gap-4 mb-10">
             <button
               onClick={() => setShowIntro(false)}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg text-lg transition"
+              className="font-display font-semibold bg-[var(--accent)] text-[#04211E] px-8 py-3 rounded-lg text-lg transition-all duration-200 hover:bg-[var(--accent-text)] hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-4px_rgba(45,212,191,0.45)]"
             >
-              Launch Dashboard →
+              Launch dashboard →
             </button>
           </div>
 
+
           {/* Feature badges */}
-          <div className="flex flex-wrap gap-2">
-            <FeatureBadge icon="📸" label="Hazard Analyzer" color="orange" />
-            <FeatureBadge icon="✅" label="Verification Agent" color="green" />
-            <FeatureBadge icon="🤝" label="Resource Coordinator" color="blue" />
-            <FeatureBadge icon="🧭" label="Route Advisor" color="purple" />
+          <div className="flex flex-wrap gap-2.5">
+            <FeatureChip label="Hazard analyzer" color="#2DD4BF" />
+            <FeatureChip label="Verification agent" color="#34D399" />
+            <FeatureChip label="Resource coordinator" color="#7C93FF" />
+            <FeatureChip label="Route advisor" color="#F0A63A" />
           </div>
         </div>
 
+        {/* Radar illustration */}
+        <div className="hidden lg:flex relative aspect-square rounded-full border border-[var(--border)] items-center justify-center">
+          <div className="absolute inset-[15%] rounded-full border border-[var(--border)]" />
+          <div className="absolute inset-[32%] rounded-full border border-[var(--border)]" />
+          <div className="absolute inset-[49%] rounded-full border border-[var(--border)]" />
+          <div className="absolute inset-0 rounded-full overflow-hidden dl-sweep">
+            <div
+              className="absolute inset-0"
+              style={{ background: "conic-gradient(from 0deg, rgba(45,212,191,0.28), transparent 26%)" }}
+            />
+          </div>
+          <div
+            className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]"
+            style={{ boxShadow: "0 0 0 6px var(--accent-dim)" }}
+          />
+          <div className="absolute w-[7px] h-[7px] rounded-full" style={{ top: "28%", left: "62%", background: "#F0555A", boxShadow: "0 0 0 5px #2A1315" }} />
+          <div className="absolute w-[7px] h-[7px] rounded-full" style={{ top: "60%", left: "33%", background: "#F0A63A", boxShadow: "0 0 0 5px #2E220D" }} />
+          <div className="absolute w-[7px] h-[7px] rounded-full" style={{ top: "44%", left: "74%", background: "#7C93FF", boxShadow: "0 0 0 5px #161B33" }} />
+        </div>
+        </div>
+
         {/* Bottom ticker */}
-        <div className="relative z-10 bg-slate-900/80 border-t border-slate-800 px-6 py-2 text-xs text-slate-400 flex items-center gap-3 overflow-hidden">
-          <span className="bg-red-600 text-white px-2 py-0.5 rounded font-semibold flex-shrink-0">
+        <div className="relative z-10 bg-[var(--warning-dim)] border-t border-[#4A340F] px-6 py-2.5 text-xs text-[var(--warning-text)] font-mono flex items-center gap-3 overflow-hidden">
+          <span className="text-[10px] font-medium text-[var(--warning)] bg-[#1a1206] border border-[#4A340F] px-2 py-0.5 rounded flex-shrink-0">
             SIM
           </span>
           <span className="whitespace-nowrap">
-            ⚠ Simulation Active — Hurricane Demo Scenario · Tampa Bay Region ·
-            Built for BAM Summer Mentorship Program Hackathon 2026
+            Simulation active — hurricane demo scenario · Tampa Bay region ·
+            Built for BAM Summer Mentorship Program hackathon 2026
           </span>
         </div>
       </main>
@@ -357,66 +390,93 @@ export default function HomeClient() {
     reports: i + 1,
   }));
 
+  // ---------------- APP SHELL ----------------
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex">
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text-primary)] flex">
       {/* Sidebar */}
-      <aside className="w-56 bg-slate-900 border-r border-slate-800 flex flex-col p-4 flex-shrink-0">
+      <aside className="w-56 bg-[var(--bg-elevated)] border-r border-[var(--border)] flex flex-col p-4 flex-shrink-0">
         <button
           onClick={() => setShowIntro(true)}
-          className="flex items-center gap-2 mb-8 px-2 text-left hover:opacity-80 transition"
+          className="flex items-center gap-2.5 mb-6 pb-[18px] border-b border-[var(--border)] text-left hover:opacity-85 transition"
         >
-          <span className="text-2xl">🛰️</span>
+          <BrandMark />
           <div>
-            <p className="font-bold text-orange-400 leading-tight">
-              DisasterLens
-            </p>
-            <p className="text-xs text-slate-500">Tampa Bay · v1.0</p>
+            <p className="font-display font-semibold text-[14.5px] leading-tight">DisasterLens</p>
+            <p className="font-mono text-[10px] text-[var(--text-muted)]">Tampa Bay · v1.0</p>
           </div>
         </button>
 
-        <nav className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-0.5">
           <SidebarButton
             active={currentView === "dashboard"}
             onClick={() => setCurrentView("dashboard")}
-            icon="📊"
             label="Dashboard"
+            icon={<path d="M4 19h16M6 19V9l6-5 6 5v10M10 19v-6h4v6" />}
           />
           <SidebarButton
             active={currentView === "report"}
             onClick={() => setCurrentView("report")}
-            icon="📸"
-            label="Report & Respond"
+            label="Report & respond"
+            icon={
+              <>
+                <circle cx="12" cy="13" r="4" />
+                <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
+              </>
+            }
           />
           <SidebarButton
             active={currentView === "volunteers"}
             onClick={() => setCurrentView("volunteers")}
-            icon="🤝"
             label="Volunteers"
+            icon={<path d="M12 21s-7-4.35-9.5-9C1 8 3 4 7 4c2 0 4 1.5 5 3 1-1.5 3-3 5-3 4 0 6 4 4.5 8-2.5 4.65-9.5 9-9.5 9z" />}
           />
           <SidebarButton
             active={currentView === "routes"}
             onClick={() => setCurrentView("routes")}
-            icon="🧭"
             label="Routes"
+            icon={
+              <>
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 3" />
+              </>
+            }
           />
         </nav>
 
-        <div className="mt-auto pt-4 border-t border-slate-800">
+        <div className="mt-auto pt-4 border-t border-[var(--border)]">
           <button
             onClick={() => setShowIntro(true)}
-            className="text-xs text-slate-500 hover:text-slate-300 px-2 transition"
+            className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] px-2 transition"
           >
-            ← Back to Landing
+            ← Back to landing
           </button>
         </div>
       </aside>
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="relative flex-1 flex flex-col min-w-0">
+        {/* Decorative background texture — fills the empty black space behind cards */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(45,212,191,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,0.03) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(900px 500px at 85% -10%, rgba(45,212,191,0.06), transparent 60%), radial-gradient(700px 400px at -5% 100%, rgba(124,147,255,0.05), transparent 60%)",
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col min-w-0 flex-1">
         {/* Simulation banner */}
-        <div className="bg-orange-600/20 border-b border-orange-500/40 px-6 py-2 text-sm text-orange-300 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span>
-          SIMULATION MODE — Hurricane Demo Scenario, Tampa Bay Region
+        <div className="bg-[var(--warning-dim)] border-b border-[#4A340F] px-6 py-2.5 text-xs font-mono text-[var(--warning-text)] flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--warning)] dl-pulse-dot"></span>
+          SIMULATION MODE — hurricane demo scenario, Tampa Bay region
         </div>
 
         <div className="p-8 overflow-y-auto">
@@ -436,25 +496,25 @@ export default function HomeClient() {
 
             {currentView === "report" && (
               <>
-                <h1 className="text-3xl font-bold text-orange-400 mb-2 text-center">
-                  Report & Respond
+                <h1 className="font-display font-semibold text-[26px] text-center mb-2.5">
+                  Report &amp; respond
                 </h1>
-                <p className="text-slate-300 mb-8 text-center max-w-md mx-auto">
+                <p className="text-[var(--text-secondary)] mb-8 text-center max-w-md mx-auto text-[14.5px] leading-relaxed">
                   Upload a photo or record a voice note from a
                   hurricane-affected area. Our AI will identify the hazard
                   and add it to the live map.
                 </p>
 
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-6">
                   {/* Upload panel */}
                   <div className="w-full lg:w-1/3">
-                    <div className="border-2 border-dashed border-slate-500 rounded-xl p-10 text-center">
-                      <p className="text-slate-400 mb-4">
+                    <div className="border border-dashed border-[var(--border-strong)] bg-[var(--surface)] rounded-xl p-8 text-center">
+                      <p className="text-[var(--text-secondary)] mb-4 text-[13.5px]">
                         Choose a photo to analyze
                       </p>
 
-                      <label className="inline-block bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2 rounded-lg cursor-pointer transition">
-                        Choose File
+                      <label className="inline-block font-display font-semibold bg-[var(--accent)] text-[#04211E] px-5 py-2.5 rounded-lg cursor-pointer transition hover:bg-[var(--accent-text)] text-[13.5px]">
+                        Choose file
                         <input
                           type="file"
                           accept="image/*"
@@ -463,7 +523,7 @@ export default function HomeClient() {
                         />
                       </label>
 
-                      <p className="mt-3 text-sm text-slate-400">
+                      <p className="mt-3 text-xs text-[var(--text-muted)]">
                         {fileName ? fileName : "No file chosen"}
                       </p>
 
@@ -471,7 +531,7 @@ export default function HomeClient() {
                         <img
                           src={image}
                           alt="Uploaded preview"
-                          className="mt-6 rounded-lg max-h-64 mx-auto"
+                          className="mt-6 rounded-lg max-h-64 mx-auto border border-[var(--border)]"
                         />
                       )}
 
@@ -481,24 +541,24 @@ export default function HomeClient() {
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                             placeholder="Add details: exact location, what's happening, who needs help..."
-                            className="mt-4 w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-sm text-white placeholder-slate-500 resize-none"
+                            className="mt-4 w-full bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-lg p-3 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] resize-none"
                             rows={3}
                           />
 
                           <button
                             onClick={isRecording ? stopRecording : startRecording}
                             disabled={transcribing}
-                            className={`mt-2 w-full px-4 py-2 rounded-lg text-sm font-medium transition ${
+                            className={`mt-2 w-full px-4 py-2.5 rounded-lg text-sm font-medium transition font-display ${
                               isRecording
-                                ? "bg-red-600 hover:bg-red-700 animate-pulse"
-                                : "bg-slate-700 hover:bg-slate-600"
+                                ? "bg-[var(--danger)] text-white animate-pulse"
+                                : "bg-[var(--bg-elevated)] border border-[var(--border-strong)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
                             }`}
                           >
                             {transcribing
-                              ? "Transcribing..."
+                              ? "Transcribing…"
                               : isRecording
-                              ? "⏹ Stop Recording"
-                              : "🎤 Record Voice Note"}
+                              ? "⏹ Stop recording"
+                              : "🎤 Record voice note"}
                           </button>
                         </>
                       )}
@@ -507,14 +567,14 @@ export default function HomeClient() {
                         <button
                           onClick={handleSubmit}
                           disabled={loading}
-                          className="mt-6 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white font-medium px-6 py-2 rounded-lg transition"
+                          className="mt-6 font-display font-semibold bg-[var(--info)] disabled:bg-[var(--border-strong)] disabled:text-[var(--text-muted)] text-[#0B1220] px-6 py-2.5 rounded-lg transition text-[13.5px]"
                         >
-                          {loading ? "Analyzing..." : "Submit for Analysis"}
+                          {loading ? "Analyzing…" : "Submit for analysis"}
                         </button>
                       )}
 
                       {result && (
-                        <pre className="mt-6 text-left text-sm bg-slate-800 p-4 rounded-lg whitespace-pre-wrap">
+                        <pre className="mt-6 text-left text-xs bg-[var(--bg-elevated)] border border-[var(--border)] p-4 rounded-lg whitespace-pre-wrap text-[var(--text-secondary)] font-mono">
                           {result}
                         </pre>
                       )}
@@ -523,8 +583,8 @@ export default function HomeClient() {
                         <div
                           className={`mt-4 text-left text-sm p-4 rounded-lg border ${
                             verificationInfo.verified
-                              ? "bg-green-900/40 border-green-500"
-                              : "bg-yellow-900/40 border-yellow-500"
+                              ? "bg-[var(--success-dim)] border-[#1B4A38] text-[var(--success-text)]"
+                              : "bg-[var(--warning-dim)] border-[#4A340F] text-[var(--warning-text)]"
                           }`}
                         >
                           {verificationInfo.verified
@@ -534,18 +594,18 @@ export default function HomeClient() {
                       )}
 
                       {nearestShelterInfo && (
-                        <div className="mt-4 text-left text-sm bg-purple-900/40 border border-purple-500 p-4 rounded-lg">
+                        <div className="mt-4 text-left text-sm bg-[var(--purple-dim)] border border-[#3C2470] text-[#D6C3FA] p-4 rounded-lg">
                           🏠 {nearestShelterInfo}
                         </div>
                       )}
 
                       {estimatedCost && (
-                        <div className="mt-4 text-left text-sm bg-slate-800 border border-slate-500 p-4 rounded-lg">
-                          <p className="text-orange-300 font-semibold mb-1">
-                            💰 Estimated Damage Cost:
+                        <div className="mt-4 text-left text-sm bg-[var(--surface)] border border-[var(--border)] p-4 rounded-lg">
+                          <p className="text-[var(--accent-text)] font-semibold mb-1">
+                            💰 Estimated damage cost
                           </p>
-                          <p className="text-slate-300">{estimatedCost}</p>
-                          <p className="text-xs text-slate-500 mt-1">
+                          <p className="text-[var(--text-secondary)]">{estimatedCost}</p>
+                          <p className="text-xs text-[var(--text-muted)] mt-1">
                             Rough AI visual estimate — not a professional
                             appraisal
                           </p>
@@ -553,20 +613,20 @@ export default function HomeClient() {
                       )}
 
                       {matchedVolunteers.length > 0 && (
-                        <div className="mt-4 text-left text-sm bg-slate-800 border border-slate-500 p-4 rounded-lg">
-                          <p className="font-semibold text-orange-300 mb-2">
-                            🤝 Matched Volunteers:
+                        <div className="mt-4 text-left text-sm bg-[var(--surface)] border border-[var(--border)] p-4 rounded-lg">
+                          <p className="font-semibold text-[var(--accent-text)] mb-2">
+                            🤝 Matched volunteers
                           </p>
                           {matchedVolunteers.map((v) => (
-                            <div key={v.id} className="text-slate-300 mb-2">
-                              <p className="font-medium text-white">
+                            <div key={v.id} className="text-[var(--text-secondary)] mb-2">
+                              <p className="font-medium text-[var(--text-primary)]">
                                 {v.name}
                               </p>
-                              <p className="text-xs text-slate-400">
+                              <p className="text-xs text-[var(--text-muted)]">
                                 {v.skill.replace("_", " ")} ·{" "}
                                 {v.neighborhood}
                               </p>
-                              <p className="text-xs text-green-400">
+                              <p className="text-xs text-[var(--success-text)]">
                                 📞 {v.contact}
                               </p>
                             </div>
@@ -575,7 +635,7 @@ export default function HomeClient() {
                       )}
 
                       {result && matchedVolunteers.length === 0 && (
-                        <div className="mt-4 text-left text-sm bg-slate-800 border border-slate-600 p-4 rounded-lg text-slate-400">
+                        <div className="mt-4 text-left text-sm bg-[var(--surface)] border border-[var(--border)] p-4 rounded-lg text-[var(--text-muted)]">
                           🤝 No matching volunteers signed up yet for this
                           hazard type.
                         </div>
@@ -585,21 +645,22 @@ export default function HomeClient() {
 
                   {/* Map panel */}
                   <div className="w-full lg:w-2/3">
-                    <DisasterMap
-                      hazards={hazards}
-                      volunteers={volunteers}
-                      route={route}
-                    />
-
-                    {/* Legend */}
-                    <div className="mt-4 flex flex-wrap gap-4 text-sm bg-slate-800 p-4 rounded-lg">
-                      <LegendItem color="#3388ff" label="Flood" />
-                      <LegendItem color="#ff3333" label="Fire" />
-                      <LegendItem color="#33cc33" label="Downed Tree" />
-                      <LegendItem color="#ff9900" label="Damaged Building" />
-                      <LegendItem color="#ffcc00" label="Blocked Road" />
-                      <LegendItem color="#9b59b6" label="Shelter" />
-                      <LegendItem color="#333333" label="Volunteer" />
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden">
+                      <DisasterMap
+                        hazards={hazards}
+                        volunteers={volunteers}
+                        route={route}
+                      />
+                      {/* Legend */}
+                      <div className="flex flex-wrap gap-x-[18px] gap-y-2 px-[22px] py-4 border-t border-[var(--border)] text-sm">
+                        <LegendItem color="#7C93FF" label="Flood" />
+                        <LegendItem color="#F0555A" label="Fire" />
+                        <LegendItem color="#34D399" label="Downed tree" />
+                        <LegendItem color="#F0A63A" label="Damaged building" />
+                        <LegendItem color="#E8B93F" label="Blocked road" />
+                        <LegendItem color="#8B5CF6" label="Shelter" />
+                        <LegendItem color="#5EEAD4" label="Volunteer" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -608,20 +669,20 @@ export default function HomeClient() {
 
             {currentView === "volunteers" && (
               <>
-                <h1 className="text-3xl font-bold text-orange-400 mb-2 text-center">
+                <h1 className="font-display font-semibold text-[26px] text-center mb-2.5">
                   Volunteers
                 </h1>
-                <p className="text-slate-300 mb-8 text-center max-w-md mx-auto">
-                  Sign up to help, and see who's already registered to
+                <p className="text-[var(--text-secondary)] mb-8 text-center max-w-md mx-auto text-[14.5px] leading-relaxed">
+                  Sign up to help, and see who&apos;s already registered to
                   respond in each neighborhood.
                 </p>
 
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-6">
                   {/* Sign-up panel */}
                   <div className="w-full lg:w-1/3">
-                    <div className="bg-slate-800 rounded-xl p-6">
-                      <p className="font-semibold text-orange-300 mb-3">
-                        Want to help? Sign up as a volunteer:
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6">
+                      <p className="font-display font-semibold text-[15px] mb-4">
+                        Want to help? Sign up as a volunteer
                       </p>
 
                       <input
@@ -629,7 +690,7 @@ export default function HomeClient() {
                         value={volunteerName}
                         onChange={(e) => setVolunteerName(e.target.value)}
                         placeholder="Your name"
-                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white placeholder-slate-500 mb-3"
+                        className="w-full bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-lg p-2.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] mb-3"
                       />
 
                       <input
@@ -637,7 +698,7 @@ export default function HomeClient() {
                         value={volunteerContact}
                         onChange={(e) => setVolunteerContact(e.target.value)}
                         placeholder="Phone or email"
-                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white placeholder-slate-500 mb-3"
+                        className="w-full bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-lg p-2.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] mb-3"
                       />
 
                       <select
@@ -645,7 +706,7 @@ export default function HomeClient() {
                         onChange={(e) =>
                           setVolunteerNeighborhood(e.target.value)
                         }
-                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white mb-3"
+                        className="w-full bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-lg p-2.5 text-sm text-[var(--text-primary)] mb-3"
                       >
                         {NEIGHBORHOOD_OPTIONS.map((n) => (
                           <option key={n} value={n}>
@@ -657,7 +718,7 @@ export default function HomeClient() {
                       <select
                         value={volunteerSkill}
                         onChange={(e) => setVolunteerSkill(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white mb-3"
+                        className="w-full bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-lg p-2.5 text-sm text-[var(--text-primary)] mb-3"
                       >
                         {SKILL_OPTIONS.map((s) => (
                           <option key={s.value} value={s.value}>
@@ -668,22 +729,25 @@ export default function HomeClient() {
 
                       <button
                         onClick={handleVolunteerSignup}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg transition"
+                        className="w-full font-display font-semibold bg-[var(--accent)] text-[#04211E] px-4 py-2.5 rounded-lg transition hover:bg-[var(--accent-text)] text-sm"
                       >
-                        Sign Up
+                        Sign up
                       </button>
                     </div>
                   </div>
 
                   {/* Registered volunteers list */}
                   <div className="w-full lg:w-2/3">
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                      <p className="font-semibold text-slate-200 mb-4">
-                        Registered Volunteers ({volunteers.length})
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6">
+                      <p className="font-display font-semibold text-[15px] mb-4 flex items-center gap-2">
+                        Registered volunteers
+                        <span className="inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded bg-[var(--bg-elevated)] border border-[var(--border-strong)] font-mono text-xs text-[var(--text-secondary)]">
+                          {volunteers.length}
+                        </span>
                       </p>
 
                       {volunteers.length === 0 ? (
-                        <p className="text-slate-500 text-sm">
+                        <p className="text-[var(--text-muted)] text-sm">
                           No volunteers signed up yet.
                         </p>
                       ) : (
@@ -691,15 +755,15 @@ export default function HomeClient() {
                           {volunteers.map((v) => (
                             <div
                               key={v.id}
-                              className="bg-slate-800 border border-slate-700 rounded-lg p-4"
+                              className="bg-[var(--bg-elevated)] border border-[var(--border)] rounded-lg p-4"
                             >
-                              <p className="font-medium text-white">
+                              <p className="font-medium text-[var(--text-primary)]">
                                 {v.name}
                               </p>
-                              <p className="text-xs text-slate-400 mt-1">
+                              <p className="text-xs text-[var(--text-muted)] mt-1">
                                 {v.skill.replace("_", " ")} · {v.neighborhood}
                               </p>
-                              <p className="text-xs text-green-400 mt-1">
+                              <p className="text-xs text-[var(--success-text)] mt-1">
                                 📞 {v.contact}
                               </p>
                             </div>
@@ -714,29 +778,33 @@ export default function HomeClient() {
 
             {currentView === "routes" && (
               <>
-                <h1 className="text-3xl font-bold text-orange-400 mb-2 text-center">
+                <h1 className="font-display font-semibold text-[26px] text-center mb-2.5">
                   Routes
                 </h1>
-                <p className="text-slate-300 mb-8 text-center max-w-md mx-auto">
+                <p className="text-[var(--text-secondary)] mb-8 text-center max-w-md mx-auto text-[14.5px] leading-relaxed">
                   Get directions to the nearest shelter, with warnings if a
                   reported hazard is blocking the way.
                 </p>
 
-                <div className="flex flex-col lg:flex-row gap-8">
+                <div className="flex flex-col lg:flex-row gap-6">
                   {/* Directions panel */}
                   <div className="w-full lg:w-1/3">
-                    <div className="bg-slate-800 rounded-xl p-6">
-                      <p className="font-semibold text-orange-300 mb-3">
-                        🧭 Get Directions to a Shelter
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6">
+                      <p className="font-display font-semibold text-[15px] mb-4 flex items-center gap-2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-[17px] h-[17px] text-[var(--accent-text)]">
+                          <circle cx="12" cy="12" r="9" />
+                          <path d="M12 7v5l3 3" />
+                        </svg>
+                        Get directions to a shelter
                       </p>
 
-                      <label className="text-xs text-slate-400 mb-1 block">
+                      <label className="text-xs text-[var(--text-secondary)] mb-1.5 block">
                         Your location
                       </label>
                       <select
                         value={myLocation}
                         onChange={(e) => setMyLocation(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white mb-3"
+                        className="w-full bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-lg p-2.5 text-sm text-[var(--text-primary)] mb-3"
                       >
                         {NEIGHBORHOOD_OPTIONS.map((n) => (
                           <option key={n} value={n}>
@@ -745,7 +813,7 @@ export default function HomeClient() {
                         ))}
                       </select>
 
-                      <label className="text-xs text-slate-400 mb-1 block">
+                      <label className="text-xs text-[var(--text-secondary)] mb-1.5 block">
                         Destination shelter
                       </label>
                       <select
@@ -753,7 +821,7 @@ export default function HomeClient() {
                         onChange={(e) =>
                           setDestinationShelterId(Number(e.target.value))
                         }
-                        className="w-full bg-slate-900 border border-slate-600 rounded-lg p-2 text-sm text-white mb-3"
+                        className="w-full bg-[var(--bg-elevated)] border border-[var(--border-strong)] rounded-lg p-2.5 text-sm text-[var(--text-primary)] mb-3"
                       >
                         {SHELTERS.map((s) => (
                           <option key={s.id} value={s.id}>
@@ -764,17 +832,17 @@ export default function HomeClient() {
 
                       <button
                         onClick={handleGetDirections}
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-lg transition"
+                        className="w-full font-display font-semibold bg-[var(--accent)] text-[#04211E] px-4 py-2.5 rounded-lg transition hover:bg-[var(--accent-text)] text-sm"
                       >
-                        Get Directions
+                        Get directions
                       </button>
 
                       {route && (
                         <div
                           className={`mt-4 text-sm p-3 rounded-lg border ${
                             route.blocked
-                              ? "bg-red-900/40 border-red-500"
-                              : "bg-green-900/40 border-green-500"
+                              ? "bg-[var(--danger-dim)] border-[#4A1E20] text-[var(--danger-text)]"
+                              : "bg-[var(--success-dim)] border-[#1B4A38] text-[var(--success-text)]"
                           }`}
                         >
                           {route.blocked
@@ -789,25 +857,27 @@ export default function HomeClient() {
 
                   {/* Map showing the route */}
                   <div className="w-full lg:w-2/3">
-                    <DisasterMap
-                      hazards={hazards}
-                      volunteers={volunteers}
-                      route={route}
-                    />
-
-                    <div className="mt-4 flex flex-wrap gap-4 text-sm bg-slate-800 p-4 rounded-lg">
-                      <LegendItem color="#3388ff" label="Flood" />
-                      <LegendItem color="#ff3333" label="Fire" />
-                      <LegendItem color="#33cc33" label="Downed Tree" />
-                      <LegendItem color="#ff9900" label="Damaged Building" />
-                      <LegendItem color="#ffcc00" label="Blocked Road" />
-                      <LegendItem color="#9b59b6" label="Shelter" />
+                    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden">
+                      <DisasterMap
+                        hazards={hazards}
+                        volunteers={volunteers}
+                        route={route}
+                      />
+                      <div className="flex flex-wrap gap-x-[18px] gap-y-2 px-[22px] py-4 border-t border-[var(--border)] text-sm">
+                        <LegendItem color="#7C93FF" label="Flood" />
+                        <LegendItem color="#F0555A" label="Fire" />
+                        <LegendItem color="#34D399" label="Downed tree" />
+                        <LegendItem color="#F0A63A" label="Damaged building" />
+                        <LegendItem color="#E8B93F" label="Blocked road" />
+                        <LegendItem color="#8B5CF6" label="Shelter" />
+                      </div>
                     </div>
                   </div>
                 </div>
               </>
             )}
           </div>
+        </div>
         </div>
       </div>
     </main>
@@ -835,101 +905,109 @@ function DashboardView({
 }) {
   return (
     <div>
-      <h1 className="text-3xl font-bold text-orange-400 mb-1">
-        Command Dashboard
+      <h1 className="font-display font-semibold text-[26px] mb-1.5 tracking-tight">
+        Command dashboard
       </h1>
-      <p className="text-slate-400 mb-6 text-sm">
-        Tampa Bay Region · Emergency Response Overview
+      <p className="text-[var(--text-secondary)] mb-7 text-[14.5px]">
+        Tampa Bay region · Emergency response overview
       </p>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 mb-8">
         <StatCard
-          label="Active Hazards"
+          label="Active hazards"
           value={hazards.length.toString()}
           sublabel={`${criticalCount} high severity`}
-          color="orange"
+          accent="var(--danger)"
+          valueColor="var(--danger-text)"
         />
         <StatCard
-          label="Verified Reports"
+          label="Verified reports"
           value={verifiedCount.toString()}
           sublabel={`of ${hazards.length} total reports`}
-          color="green"
+          accent="var(--success)"
+          valueColor="var(--success-text)"
         />
         <StatCard
-          label="Shelter Capacity"
+          label="Shelter capacity"
           value={`${capacityPercent}%`}
           sublabel={`${totalOccupied} / ${totalCapacity} occupied`}
-          color="purple"
+          accent="var(--info)"
+          valueColor="#B7C2FF"
         />
         <StatCard
-          label="Volunteers Ready"
+          label="Volunteers ready"
           value={volunteers.length.toString()}
           sublabel="registered responders"
-          color="blue"
+          accent="var(--accent)"
+          valueColor="var(--accent-text)"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         {/* Hazard reports over time chart */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-          <p className="font-semibold text-slate-200 mb-4">
-            Reports Over Time
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6">
+          <p className="font-display font-semibold text-[15px] mb-4">
+            Reports over time
           </p>
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} />
-                <YAxis stroke="#94a3b8" fontSize={12} allowDecimals={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#232C38" />
+                <XAxis dataKey="name" stroke="#8A97A8" fontSize={12} />
+                <YAxis stroke="#8A97A8" fontSize={12} allowDecimals={false} />
                 <Tooltip
                   contentStyle={{
-                    background: "#1e293b",
-                    border: "1px solid #334155",
+                    background: "#141B26",
+                    border: "1px solid #232C38",
+                    borderRadius: 8,
+                    color: "#EDF2F7",
                   }}
                 />
                 <Line
                   type="monotone"
                   dataKey="reports"
-                  stroke="#f97316"
+                  stroke="#2DD4BF"
                   strokeWidth={2}
                 />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-slate-500 text-sm">
-              No reports yet — submit a photo in "Report & Respond" to see
+            <p className="text-[var(--text-muted)] text-[13.5px] border border-dashed border-[var(--border-strong)] rounded-lg h-[150px] flex items-center justify-center text-center px-4">
+              No reports yet — submit a photo in &quot;Report &amp; respond&quot; to see
               data here.
             </p>
           )}
         </div>
 
         {/* Shelter capacity bars */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-          <p className="font-semibold text-slate-200 mb-4">
-            Shelter Capacity
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6">
+          <p className="font-display font-semibold text-[15px] mb-4">
+            Shelter capacity
           </p>
           <div className="flex flex-col gap-4">
             {SHELTERS.map((s) => {
               const pct = Math.round((s.currentOccupancy / s.capacity) * 100);
               return (
                 <div key={s.id}>
-                  <div className="flex justify-between text-xs text-slate-400 mb-1">
-                    <span>{s.name}</span>
-                    <span>
+                  <div className="flex justify-between text-[13.5px] mb-1.5">
+                    <span className="font-medium">{s.name}</span>
+                    <span className="font-mono text-[12.5px] text-[var(--text-secondary)]">
                       {s.currentOccupancy}/{s.capacity}
                     </span>
                   </div>
-                  <div className="w-full bg-slate-800 rounded-full h-2">
+                  <div className="w-full bg-[var(--bg-elevated)] rounded-full h-1.5">
                     <div
-                      className={`h-2 rounded-full ${
-                        pct > 85
-                          ? "bg-red-500"
-                          : pct > 60
-                          ? "bg-yellow-500"
-                          : "bg-green-500"
-                      }`}
-                      style={{ width: `${pct}%` }}
+                      className="h-1.5 rounded-full"
+                      style={{
+                        width: `${pct}%`,
+                        background:
+                          pct > 85
+                            ? "var(--danger)"
+                            : pct > 60
+                            ? "var(--warning)"
+                            : "var(--success)",
+                      }}
                     ></div>
                   </div>
                 </div>
@@ -940,49 +1018,49 @@ function DashboardView({
       </div>
 
       {/* Hazard table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-        <p className="font-semibold text-slate-200 mb-4">
-          Active Hazard Reports
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-6">
+        <p className="font-display font-semibold text-[15px] mb-4">
+          Active hazard reports
         </p>
 
         {hazards.length === 0 ? (
-          <p className="text-slate-500 text-sm">
-            No hazards reported yet. Go to "Report & Respond" to submit one.
+          <p className="text-[var(--text-muted)] text-[13.5px]">
+            No hazards reported yet. Go to &quot;Report &amp; respond&quot; to submit one.
           </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-slate-400 border-b border-slate-800">
-                  <th className="pb-2 pr-4">Type</th>
-                  <th className="pb-2 pr-4">Severity</th>
-                  <th className="pb-2 pr-4">Status</th>
-                  <th className="pb-2">Description</th>
+                <tr className="text-left text-[var(--text-secondary)] border-b border-[var(--border)]">
+                  <th className="pb-2.5 pr-4 font-medium">Type</th>
+                  <th className="pb-2.5 pr-4 font-medium">Severity</th>
+                  <th className="pb-2.5 pr-4 font-medium">Status</th>
+                  <th className="pb-2.5 font-medium">Description</th>
                 </tr>
               </thead>
               <tbody>
                 {hazards.map((h) => (
-                  <tr key={h.id} className="border-b border-slate-800/50">
-                    <td className="py-2 pr-4">
+                  <tr key={h.id} className="border-b border-[var(--border)]/60">
+                    <td className="py-2.5 pr-4">
                       <span className="flex items-center gap-2">
                         <span
                           className="w-2 h-2 rounded-full inline-block"
                           style={{
-                            backgroundColor: HAZARD_COLORS[h.type] || "#888",
+                            backgroundColor: HAZARD_COLORS[h.type] || "#5B6675",
                           }}
                         ></span>
                         {h.type.replace("_", " ")}
                       </span>
                     </td>
-                    <td className="py-2 pr-4 capitalize">{h.severity}</td>
-                    <td className="py-2 pr-4">
+                    <td className="py-2.5 pr-4 capitalize">{h.severity}</td>
+                    <td className="py-2.5 pr-4">
                       {h.verified ? (
-                        <span className="text-green-400">✅ Verified</span>
+                        <span className="text-[var(--success-text)]">✅ Verified</span>
                       ) : (
-                        <span className="text-yellow-400">⚠️ Unverified</span>
+                        <span className="text-[var(--warning-text)]">⚠️ Unverified</span>
                       )}
                     </td>
-                    <td className="py-2 text-slate-400">{h.description}</td>
+                    <td className="py-2.5 text-[var(--text-secondary)]">{h.description}</td>
                   </tr>
                 ))}
               </tbody>
@@ -998,25 +1076,36 @@ function StatCard({
   label,
   value,
   sublabel,
-  color,
+  accent,
+  valueColor,
 }: {
   label: string;
   value: string;
   sublabel: string;
-  color: "orange" | "green" | "purple" | "blue";
+  accent: string;
+  valueColor: string;
 }) {
-  const colorMap = {
-    orange: "text-orange-400",
-    green: "text-green-400",
-    purple: "text-purple-400",
-    blue: "text-blue-400",
-  };
-
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-      <p className="text-xs text-slate-500 mb-1">{label}</p>
-      <p className={`text-3xl font-bold ${colorMap[color]}`}>{value}</p>
-      <p className="text-xs text-slate-500 mt-1">{sublabel}</p>
+    <div
+      className="bg-[var(--surface)] border border-[var(--border)] rounded-[10px] p-5"
+      style={{ borderLeft: `2px solid ${accent}` }}
+    >
+      <p className="text-[12.5px] text-[var(--text-secondary)] mb-2.5">{label}</p>
+      <p className="font-mono text-[28px] font-medium mb-1.5" style={{ color: valueColor }}>
+        {value}
+      </p>
+      <p className="font-mono text-xs text-[var(--text-muted)]">{sublabel}</p>
+    </div>
+  );
+}
+
+function BrandMark() {
+  return (
+    <div className="w-[30px] h-[30px] rounded-[7px] bg-[var(--accent-dim)] border border-[var(--border-strong)] flex items-center justify-center flex-shrink-0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" strokeWidth={1.8} className="w-4 h-4">
+        <path d="M12 2 4 6v6c0 5 3.6 8.6 8 10 4.4-1.4 8-5 8-10V6z" />
+        <path d="M9 12l2 2 4-4" />
+      </svg>
     </div>
   );
 }
@@ -1029,19 +1118,21 @@ function SidebarButton({
 }: {
   active: boolean;
   onClick: () => void;
-  icon: string;
+  icon: JSX.Element;
   label: string;
 }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition text-left ${
+      className={`flex items-center gap-[11px] px-3 py-2.5 rounded-lg text-sm font-medium transition text-left border-l-2 ${
         active
-          ? "bg-orange-500/20 text-orange-300 border border-orange-500/40"
-          : "text-slate-400 hover:bg-slate-800 hover:text-white"
+          ? "bg-[var(--accent-dim)] text-[var(--accent-text)] border-l-[var(--accent)]"
+          : "text-[var(--text-secondary)] border-l-transparent hover:bg-[var(--surface)]"
       }`}
     >
-      <span>{icon}</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-[17px] h-[17px] flex-shrink-0">
+        {icon}
+      </svg>
       {label}
     </button>
   );
@@ -1051,35 +1142,19 @@ function LegendItem({ color, label }: { color: string; label: string }) {
   return (
     <div className="flex items-center gap-2">
       <span
-        className="w-3 h-3 rounded-full inline-block"
+        className="w-[9px] h-[9px] rounded-full inline-block flex-shrink-0"
         style={{ backgroundColor: color }}
       ></span>
-      <span className="text-slate-300">{label}</span>
+      <span className="text-[var(--text-secondary)]">{label}</span>
     </div>
   );
 }
 
-function FeatureBadge({
-  icon,
-  label,
-  color,
-}: {
-  icon: string;
-  label: string;
-  color: "orange" | "green" | "blue" | "purple";
-}) {
-  const colorMap = {
-    orange: "bg-orange-500/10 text-orange-300 border-orange-500/30",
-    green: "bg-green-500/10 text-green-300 border-green-500/30",
-    blue: "bg-blue-500/10 text-blue-300 border-blue-500/30",
-    purple: "bg-purple-500/10 text-purple-300 border-purple-500/30",
-  };
-
+function FeatureChip({ label, color }: { label: string; color: string }) {
   return (
-    <span
-      className={`text-xs font-medium px-3 py-1.5 rounded-full border ${colorMap[color]}`}
-    >
-      {icon} {label}
+    <span className="flex items-center gap-2 font-mono text-[11.5px] px-[13px] py-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]">
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: color }} />
+      {label}
     </span>
   );
 }

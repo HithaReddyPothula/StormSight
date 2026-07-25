@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Tailwind v4 theme tokens (kept from your template, repointed to the dark palette) */
+  --background: #0A0E14;
+  --foreground: #EDF2F7;
+
+  /* Surfaces */
+  --bg: #0A0E14;
+  --bg-elevated: #10161F;
+  --surface: #141B26;
+  --surface-hover: #182028;
+  --border: #232C38;
+  --border-strong: #2E3947;
+
+  /* Text */
+  --text-primary: #EDF2F7;
+  --text-secondary: #8A97A8;
+  --text-muted: #5B6675;
+
+  /* Brand accent (teal) */
+  --accent: #2DD4BF;
+  --accent-dim: #0F2E2B;
+  --accent-text: #5EEAD4;
+
+  /* Semantic — use ONLY for meaning, never decoration */
+  --danger: #F0555A;
+  --danger-dim: #2A1315;
+  --danger-text: #F79599;
+
+  --warning: #F0A63A;
+  --warning-dim: #2E220D;
+  --warning-text: #F3BE72;
+
+  --success: #34D399;
+  --success-dim: #0F2A20;
+  --success-text: #6EE7B7;
+
+  --info: #7C93FF;
+  --info-dim: #161B33;
+
+  --purple: #8B5CF6;
+  --purple-dim: #241536;
 }
+
+/* NOTE: intentionally no `@media (prefers-color-scheme: dark)` override —
+   DisasterLens is always dark by design, it doesn't follow the OS theme. */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-mono: var(--font-plex-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Space Grotesk is used for headings only, so it isn't wired into
+   Tailwind's font-sans/font-mono theme tokens — use this class instead. */
+.font-display {
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+/* Simulation-mode pulse used in the topbar */
+@keyframes dl-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.dl-pulse-dot {
+  animation: dl-blink 1.6s ease-in-out infinite;
+}
+
+/* Radar sweep + ring pulse on the landing hero */
+@keyframes dl-spin {
+  to { transform: rotate(360deg); }
+}
+.dl-sweep {
+  animation: dl-spin 6s linear infinite;
+}
+@keyframes dl-ring-pulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.dl-ring-pulse {
+  animation: dl-ring-pulse 2s ease-out infinite;
+}
+
+/* Leaflet overrides so the map matches the dark UI */
+.leaflet-popup-content-wrapper {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-radius: 8px;
+}
+.leaflet-popup-content {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+}
+.leaflet-popup-tip {
+  background: var(--surface);
+}
+.leaflet-control-zoom a {
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
 }
