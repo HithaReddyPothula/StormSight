@@ -44,7 +44,7 @@
 }
 
 /* NOTE: intentionally no `@media (prefers-color-scheme: dark)` override —
-   DisasterLens is always dark by design, it doesn't follow the OS theme. */
+   StormSight is always dark by design, it doesn't follow the OS theme. */
 
 @theme inline {
   --color-background: var(--background);

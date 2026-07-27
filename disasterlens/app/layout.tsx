@@ -25,7 +25,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DisasterLens AI",
+  title: "StormSight",
   description: "AI-powered disaster intelligence platform for Tampa Bay",
 };
 

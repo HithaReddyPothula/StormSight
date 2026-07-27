@@ -284,7 +284,7 @@ export default function HomeClient() {
         <nav className="relative z-10 flex items-center justify-between px-8 py-5">
           <div className="flex items-center gap-2.5">
             <BrandMark />
-            <span className="font-display font-semibold text-lg">DisasterLens</span>
+            <span className="font-display font-semibold text-lg">StormSight</span>
             <span className="font-mono text-[10px] text-[var(--text-muted)] bg-[var(--surface)] border border-[var(--border)] px-2 py-0.5 rounded-full ml-1">
               v1.0
             </span>
@@ -316,7 +316,7 @@ export default function HomeClient() {
             When disaster strikes, every second matters.
           </p>
           <p className="text-[var(--text-secondary)] mb-10 max-w-xl leading-relaxed">
-            DisasterLens turns community-submitted photos and voice reports
+            StormSight turns community-submitted photos and voice reports
             into <strong className="text-[var(--text-primary)] font-medium">real-time emergency intelligence </strong>
             — helping responders
             identify hazards, locate shelters, and save lives faster.{" "}
@@ -400,7 +400,7 @@ export default function HomeClient() {
         >
           <BrandMark />
           <div>
-            <p className="font-display font-semibold text-[14.5px] leading-tight">DisasterLens</p>
+            <p className="font-display font-semibold text-[14.5px] leading-tight">StormSight</p>
             <p className="font-mono text-[10px] text-[var(--text-muted)]">Tampa Bay · v1.0</p>
           </div>
         </button>
