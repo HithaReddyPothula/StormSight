@@ -308,8 +308,8 @@ export default function HomeClient() {
           </div>
 
           <h1 className="font-display font-bold text-6xl mb-6 leading-tight tracking-tight">
-            Disaster
-            <span className="text-[var(--accent-text)]">Lens</span>
+            Storm
+            <span className="text-[var(--accent-text)]">Sight</span>
           </h1>
 
           <p className="text-[var(--text-primary)] text-lg mb-2 max-w-xl font-medium">
